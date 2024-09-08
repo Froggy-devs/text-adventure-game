@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Adventure Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 20px;
+    }
+    #game {
+      border: 2px solid #333;
+      padding: 20px;
+      background-color: #fff;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .choices button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background-color: #555;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <h1>Text Adventure Game</h1>
+    <p id="story">Welcome to the game! You are standing at a crossroads.</p>
+    <div class="choices">
+      <!-- Buttons for choices will appear here -->
+    </div>
+  </div>
+
+  <script>
+    const storyElement = document.getElementById('story');
+    const choicesElement = document.querySelector('.choices');
+
+    // Game state and story progression
+    const gameData = {
+      start: {
+        text: "You are standing at a crossroads. Do you go left or right?",
+        choices: [
+          { text: "Go left", next: "leftPath" },
+          { text: "Go right", next: "rightPath" }
+        ]
+      },
+      leftPath: {
+        text: "You walk down a forest path and find a treasure chest. Do you open it?",
+        choices: [
+          { text: "Open the chest", next: "openChest" },
+          { text: "Walk away", next: "walkAway" }
+        ]
+      },
+      rightPath: {
+        text: "You encounter a mysterious wizard who offers you a potion. Do you drink it?",
+        choices: [
+          { text: "Drink the potion", next: "drinkPotion" },
+          { text: "Refuse the potion", next: "refusePotion" }
+        ]
+      },
+      openChest: {
+        text: "The chest contains gold! You're rich! The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      },
+      walkAway: {
+        text: "You walk away and leave the treasure behind. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      },
+      drinkPotion: {
+        text: "The potion makes you stronger! You feel invincible. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      },
+      refusePotion: {
+        text: "The wizard vanishes in a puff of smoke. You walk away. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      }
+    };
+
+    // Function to display the story text and choices
+    function displayStory(storyKey) {
+      const story = gameData[storyKey];
+      storyElement.textContent = story.text;
+      choicesElement.innerHTML = ''; // Clear previous choices
+
+      // Add choice buttons
+      story.choices.forEach(choice => {
+        const button = document.createElement('button');
+        button.textContent = choice.text;
+        button.onclick = () => displayStory(choice.next);
+        choicesElement.appendChild(button);
+      });
+    }
+
+    // Start the game
+    displayStory('start');
+  </script>
+</body>
+</html>
