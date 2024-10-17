@@ -1,91 +1,161 @@
-<script>
-  const storyElement = document.getElementById('story');
-  const choicesElement = document.querySelector('.choices');
-  const chestVideo = document.getElementById('chestVideo');
-
-  // Game state and story progression
-  const gameData = {
-    start: {
-      text: "You are standing at a crossroads. Do you go left or right?",
-      choices: [
-        { text: "Go left", next: "leftPath" },
-        { text: "Go right", next: "rightPath" }
-      ]
-    },
-    leftPath: {
-      text: "You walk down a forest path and find a treasure chest. Do you open it?",
-      choices: [
-        { text: "Open the chest", next: "openChest" },
-        { text: "Walk away", next: "walkAway" }
-      ]
-    },
-    rightPath: {
-      text: "You encounter a mysterious wizard who offers you a potion. Do you drink it?",
-      choices: [
-        { text: "Drink the potion", next: "drinkPotion" },
-        { text: "Refuse the potion", next: "refusePotion" }
-      ]
-    },
-    openChest: {
-      text: "You open the chest...",
-      choices: [] // No further choices as video will play
-    },
-    walkAway: {
-      text: "You walk away and leave the treasure behind. The game is over.",
-      choices: [
-        { text: "Restart", next: "start" }
-      ]
-    },
-    drinkPotion: {
-      text: "The potion makes you stronger! You feel invincible. The game is over.",
-      choices: [
-        { text: "Restart", next: "start" }
-      ]
-    },
-    refusePotion: {
-      text: "The wizard vanishes in a puff of smoke. You walk away. The game is over.",
-      choices: [
-        { text: "Restart", next: "start" }
-      ]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text Adventure Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      color: #333;
+      padding: 20px;
     }
-  };
-
-  // Function to display the story text and choices
-  function displayStory(storyKey) {
-    const story = gameData[storyKey];
-    storyElement.textContent = story.text;
-    choicesElement.innerHTML = ''; // Clear previous choices
-
-    // Hide video initially
-    chestVideo.style.display = 'none';
-    chestVideo.pause();
-    chestVideo.currentTime = 0;
-
-    if (storyKey === 'openChest') {
-      // Display the video when the chest is opened
-      chestVideo.style.display = 'block';
-      chestVideo.play();
-
-      // After the video ends, display game-over text and restart button
-      chestVideo.onended = () => {
-        storyElement.textContent = "The chest contains gold! You're rich! The game is over.";
-        const restartButton = document.createElement('button');
-        restartButton.textContent = "Restart";
-        restartButton.onclick = () => displayStory('start');
-        choicesElement.appendChild(restartButton);
-      };
-    } else {
-      // Add choice buttons if they exist
-      story.choices.forEach(choice => {
-        const button = document.createElement('button');
-        button.textContent = choice.text;
-        button.onclick = () => displayStory(choice.next);
-        choicesElement.appendChild(button);
-      });
+    #game {
+      border: 2px solid #333;
+      padding: 20px;
+      background-color: #fff;
+      max-width: 600px;
+      margin: 0 auto;
     }
-  }
+    .choices button {
+      display: block;
+      margin: 10px 0;
+      padding: 10px;
+      width: 100%;
+      background-color: #333;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background-color: #555;
+    }
+    #chestVideo {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div id="game">
+    <h1>Text Adventure Game</h1>
+    <p id="story">Welcome to the game! You are standing at a crossroads.</p>
+    <div class="choices">
+      <!-- Buttons for choices will appear here -->
+    </div>
+    <video id="chestVideo" width="100%" controls>
+      <source id="videoSource" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
 
-  // Start the game
-  displayStory('start');
-</script>
+  <script>
+    const storyElement = document.getElementById('story');
+    const choicesElement = document.querySelector('.choices');
+    const chestVideo = document.getElementById('chestVideo');
+    const videoSource = document.getElementById('videoSource');
 
+    // Array of video file paths
+    const videos = [
+      'chest_opening1.mp4',
+      'chest_opening2.mp4',
+      'chest_opening3.mp4'
+    ];
+
+    // Function to get a random video from the list
+    function getRandomVideo() {
+      const randomIndex = Math.floor(Math.random() * videos.length);
+      return videos[randomIndex];
+    }
+
+    // Game state and story progression
+    const gameData = {
+      start: {
+        text: "You are standing at a crossroads. Do you go left or right?",
+        choices: [
+          { text: "Go left", next: "leftPath" },
+          { text: "Go right", next: "rightPath" }
+        ]
+      },
+      leftPath: {
+        text: "You walk down a forest path and find a treasure chest. Do you open it?",
+        choices: [
+          { text: "Open the chest", next: "openChest" },
+          { text: "Walk away", next: "walkAway" }
+        ]
+      },
+      rightPath: {
+        text: "You encounter a mysterious wizard who offers you a potion. Do you drink it?",
+        choices: [
+          { text: "Drink the potion", next: "drinkPotion" },
+          { text: "Refuse the potion", next: "refusePotion" }
+        ]
+      },
+      openChest: {
+        text: "You open the chest...",
+        choices: [] // No further choices as video will play
+      },
+      walkAway: {
+        text: "You walk away and leave the treasure behind. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      },
+      drinkPotion: {
+        text: "The potion makes you stronger! You feel invincible. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      },
+      refusePotion: {
+        text: "The wizard vanishes in a puff of smoke. You walk away. The game is over.",
+        choices: [
+          { text: "Restart", next: "start" }
+        ]
+      }
+    };
+
+    // Function to display the story text and choices
+    function displayStory(storyKey) {
+      const story = gameData[storyKey];
+      storyElement.textContent = story.text;
+      choicesElement.innerHTML = ''; // Clear previous choices
+
+      // Hide video initially
+      chestVideo.style.display = 'none';
+      chestVideo.pause();
+      chestVideo.currentTime = 0;
+
+      if (storyKey === 'openChest') {
+        // Get a random video and set it as the source
+        const randomVideo = getRandomVideo();
+        videoSource.src = randomVideo;
+        chestVideo.style.display = 'block';
+        chestVideo.load(); // Reload the video element with the new source
+        chestVideo.play();
+
+        // After the video ends, display game-over text and restart button
+        chestVideo.onended = () => {
+          storyElement.textContent = "The chest contains gold! You're rich! The game is over.";
+          const restartButton = document.createElement('button');
+          restartButton.textContent = "Restart";
+          restartButton.onclick = () => displayStory('start');
+          choicesElement.appendChild(restartButton);
+        };
+      } else {
+        // Add choice buttons if they exist
+        story.choices.forEach(choice => {
+          const button = document.createElement('button');
+          button.textContent = choice.text;
+          button.onclick = () => displayStory(choice.next);
+          choicesElement.appendChild(button);
+        });
+      }
+    }
+
+    // Start the game
+    displayStory('start');
+  </script>
+</body>
+</html>
