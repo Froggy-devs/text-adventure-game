@@ -31,6 +31,10 @@
     .choices button:hover {
       background-color: #555;
     }
+    #chestVideo {
+      display: none;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -40,11 +44,16 @@
     <div class="choices">
       <!-- Buttons for choices will appear here -->
     </div>
+    <video id="chestVideo" width="100%" controls>
+      <source src="chest_opening.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
   </div>
 
   <script>
     const storyElement = document.getElementById('story');
     const choicesElement = document.querySelector('.choices');
+    const chestVideo = document.getElementById('chestVideo');
 
     // Game state and story progression
     const gameData = {
@@ -70,10 +79,8 @@
         ]
       },
       openChest: {
-        text: "The chest contains gold! You're rich! The game is over.",
-        choices: [
-          { text: "Restart", next: "start" }
-        ]
+        text: "You open the chest...",
+        choices: [] // No further choices as video will play
       },
       walkAway: {
         text: "You walk away and leave the treasure behind. The game is over.",
@@ -101,13 +108,24 @@
       storyElement.textContent = story.text;
       choicesElement.innerHTML = ''; // Clear previous choices
 
-      // Add choice buttons
-      story.choices.forEach(choice => {
-        const button = document.createElement('button');
-        button.textContent = choice.text;
-        button.onclick = () => displayStory(choice.next);
-        choicesElement.appendChild(button);
-      });
+      // Hide video initially
+      chestVideo.style.display = 'none';
+      chestVideo.pause();
+      chestVideo.currentTime = 0;
+
+      if (storyKey === 'openChest') {
+        // Display the video when the chest is opened
+        chestVideo.style.display = 'block';
+        chestVideo.play();
+      } else {
+        // Add choice buttons if they exist
+        story.choices.forEach(choice => {
+          const button = document.createElement('button');
+          button.textContent = choice.text;
+          button.onclick = () => displayStory(choice.next);
+          choicesElement.appendChild(button);
+        });
+      }
     }
 
     // Start the game
